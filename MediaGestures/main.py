@@ -7,26 +7,6 @@ mp_draw = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
-# def switchWin(finger2, hand_landmarks, key):
-#     is_active =True
-#     start_time = None
-#     pinching = False
-#     dist = distance("THUMB_TIP", finger2, hand_landmarks)
-#     if dist<0.05:
-#         if is_active:
-#             if start_time is None:
-#                 start_time = time.perf_counter()
-
-#         elapsed = time.time() - start_time
-#         # print(elapsed)
-#         # print(start_time)
-#         # print(time.time())
-#         if (elapsed> 0.5):
-#             pinching = True
-
-# def pinching(finger1,finger2, hand_landmarks):
-#     start_time = None
-#     is_active = True
 
 finger_map = {
         "WRIST": mp_hands.HandLandmark.WRIST,
@@ -69,12 +49,11 @@ def distance(finger1, finger2, hand_landmarks):
     dist = ((f1x-f2x)**2 + (f1y-f2y)**2)**(0.5)
     return dist
 
-def volControl(finger2, hand_landmarks):
-    is_active =True
+def isPinching(finger1, finger2, hand_landmarks):
+    is_active = True
     start_time = None
-    dist = distance("THUMB_TIP", finger2, hand_landmarks)
-
-    if dist<0.05:
+    dist = distance(finger1, finger2, hand_landmarks)
+    if (dist < 0.05):
         if is_active:
             if start_time is None:
                 start_time = time.perf_counter()
@@ -84,33 +63,55 @@ def volControl(finger2, hand_landmarks):
         # print(start_time)
         # print(time.time())
         if (elapsed> 0.5):
-            
-            #print(f"{finger2} and t pinching")
-            if (finger2 == "INDEX_FINGER_TIP"):
-                if (distance("THUMB_TIP", "MIDDLE_FINGER_TIP", hand_landmarks)>0.10):
-                    pyautogui.press('volumeup')
-            elif (finger2 == "MIDDLE_FINGER_TIP"):
-                if (distance("THUMB_TIP", "INDEX_FINGER_TIP", hand_landmarks)>0.10):
-                    pyautogui.press('volumedown')
-        
+            return True
     else:
         start_time = None
 
+def isTap(finger1, finger2, hand_landmarks): # need to fix
+    is_active = True
+    start_time = None
+    dist = distance(finger1, finger2, hand_landmarks)
+    if (dist<0.05):
+        if is_active:
+            if start_time is None:
+                start_time = time.perf_counter()
+
+        elapsed = time.time() - start_time
+        # print(elapsed)
+        # print(start_time)
+        # print(time.time())
+        if (elapsed< 0.4):
+            return True
+    else:
+        start_time = None
+
+def volControl(finger2, hand_landmarks):
+    if isPinching("THUMB_TIP", finger2, hand_landmarks):
+        if (finger2 == "INDEX_FINGER_TIP"):
+            pyautogui.press('volumeup')
+        elif (finger2 == "MIDDLE_FINGER_TIP"):
+            pyautogui.press('volumedown')
+
 def click(finger2, hand_landmarks):
-    dist = distance("THUMB_TIP", finger2, hand_landmarks)
-    if dist<0.05:
+    if isTap("THUMB_TIP", finger2, hand_landmarks) :
+        print("we're tapping")
         pyautogui.click()
-        return True
-    
+       
 def zoom (finger2, hand_landmarks):
     dist = distance("THUMB_TIP", finger2, hand_landmarks)
-    if dist<0.05:
+    #print(dist)
+    #print(finger2)
+
+    if isPinching("THUMB_TIP", finger2, hand_landmarks) :
+        #print("thumb and "+finger2+" are tapping")
         if finger2 == "RING_FINGER_TIP":
+            #print("this should zoom in")
             pyautogui.keyDown('ctrl')
             pyautogui.keyDown('+')
             pyautogui.keyUp('ctrl')
             pyautogui.keyUp('+')
-        elif finger2 == "PINKY_FINGER_TIP":
+        elif finger2 =="PINKY_FINGER_TIP":
+            #print("this should zoom out")
             pyautogui.keyDown('ctrl')
             pyautogui.keyDown('-')
             pyautogui.keyUp('ctrl')
@@ -144,8 +145,8 @@ def main():
                 volControl("INDEX_FINGER_TIP", hand_landmarks)
                 volControl("MIDDLE_FINGER_TIP", hand_landmarks)
                 click("INDEX_FINGER_TIP", hand_landmarks)
-                zoom("RING_FINGER_PIP",hand_landmarks)
-                zoom("PINKY_FINGER_PIP",hand_landmarks)
+                zoom("RING_FINGER_TIP",hand_landmarks)
+                zoom("PINKY_FINGER_TIP",hand_landmarks)
 
             else:
                 cv2.putText(img, "no hand yet", (20,40), cv2.FONT_HERSHEY_COMPLEX, 1, (255,255,255),1, cv2.LINE_AA )
