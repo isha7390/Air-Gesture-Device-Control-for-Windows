@@ -2,14 +2,16 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import cv2
-import time
 import pyautogui
 from collections import namedtuple
+base_options = python.BaseOptions(model_asset_path = 'gesture_recogniser.task')
+options = vision.GestureRecognizerOptions(base_options=base_options)
 mp_hands = mp.solutions.hands
 mp_draw = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
+
 frame_count = {
     "THUMB_TIP": {
         "INDEX_FINGER_TIP": 0,
@@ -140,7 +142,7 @@ def main():
         max_num_hands = 2,
         min_detection_confidence = 0.9,
         min_tracking_confidence =0.9
-    )as hands:
+    ) as hands:
         while True:
             attempt =0
             success, img = cap.read()
@@ -157,24 +159,30 @@ def main():
             rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB )
             results = hands.process(rgb)
             if results.multi_hand_landmarks:
+                print(results.multi_handedness)
+                
                 for hand_landmarks in results.multi_hand_landmarks:
                     mp_draw.draw_landmarks(img, hand_landmarks, mp_hands.HAND_CONNECTIONS )
                     
+                rightIndex = -1
+                for i in range(len(results.multi_handedness)):
+                    if(results.multi_handedness[i].classification[0].label == "Right"):
+                        rightIndex =i
+                        break
 
+                if (rightIndex != -1):        
+                    for i,j in TOUCH_TYPES:
+                        dist = distance(i, j, results.multi_hand_landmarks[rightIndex])
+                        if dist<0.05:
+                            frame_count[i][j]+=1
+                        else:
+                            frame_count[i][j]=0
 
-                for i,j in TOUCH_TYPES:
-                    dist = distance(i, j, hand_landmarks)
-                    if dist<0.05:
-                        frame_count[i][j]+=1
-                    else:
-                        frame_count[i][j]=0
-
-                volControl("INDEX_FINGER_TIP")
-                volControl("MIDDLE_FINGER_TIP")
-                click("INDEX_FINGER_TIP")
-                zoom("RING_FINGER_TIP")
-                zoom("PINKY_FINGER_TIP")
-
+                    volControl("INDEX_FINGER_TIP")
+                    volControl("MIDDLE_FINGER_TIP")
+                    click("INDEX_FINGER_TIP")
+                    zoom("RING_FINGER_TIP")
+                    zoom("PINKY_FINGER_TIP")
             else:
                 cv2.putText(img, "no hand yet", (20,40), cv2.FONT_HERSHEY_COMPLEX, 1, (255,255,255),1, cv2.LINE_AA )
 
