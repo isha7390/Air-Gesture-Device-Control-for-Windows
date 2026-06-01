@@ -12,6 +12,7 @@ cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
 
+
 frame_count = {
     "THUMB_TIP": {
         "INDEX_FINGER_TIP": 0,
@@ -101,8 +102,8 @@ def isTap(finger1, finger2):
     frame = get_frame(finger1, finger2)
     print(frame)
     if 0<frame<5:
-        print("chekcing if this is a tap")
-        print("this is a tap")
+        # print("chekcing if this is a tap")
+        # print("this is a tap")
         return True
     else:
         return False  
@@ -159,7 +160,7 @@ def main():
             rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB )
             results = hands.process(rgb)
             if results.multi_hand_landmarks:
-                print(results.multi_handedness)
+                # print(results.multi_handedness)
                 
                 for hand_landmarks in results.multi_hand_landmarks:
                     mp_draw.draw_landmarks(img, hand_landmarks, mp_hands.HAND_CONNECTIONS )
@@ -198,4 +199,22 @@ if __name__ == '__main__':
 
 
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
