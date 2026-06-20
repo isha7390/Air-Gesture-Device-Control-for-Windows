@@ -1,0 +1,99 @@
+<html>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/streamlit-component-lib@1.3.0/dist/streamlit-component-lib.js"></script> -->
+    <script src="script.js" defer></script>
+    
+    <body>
+
+        <button id ="sButton">Settings</button>
+
+        <div class="h-container">
+            <h1>Gestures  <button id="oButton">+</button></h1>
+
+            <dialog id="details">
+                <div id ="details-container">
+                    <button id="cButton">X</button>
+                    <header class="dHeader">
+                        <h2 id="gHead" >Gestures</h2>
+
+                        <select id="right-hand" class="drop">
+                            <option value="">Choose for right</option>
+                            <option value="pinch">Pinch</option>
+                            <option value="tap">Tap</option>
+                            <option value="none">None</option>
+                        </select>
+                        <p id="rightVal"></p>
+
+                        <select id="left-hand" class="drop">
+                            <option value="">Choose for left</option>
+                            <option value="fist">Fist</option>
+                            <option value="none">None</option>
+                            <p id="noVal"></p>
+                        </select>
+                        <p id="leftVal"></p>
+
+                        <select id="finger" class="drop">
+                            <option value="">Choose for finger</option>
+                            <option value="index">Index</option>
+                            <option value="middle">Middle</option>
+                            <option value="ring">Ring</option>
+                            <option value="pinky">Pinky</option>
+                            <option value="none">None</option>
+                            <p id="noVal"></p>
+                        </select>
+                        <p id="fingerVal"></p>
+
+                        <h2 id="aHead">Actions</h2>
+                        <select id="action" class="drop">
+                            <option value="">Choose an action</option>
+                            <option value="vol-up">Increase volume</option>
+                            <option value="vol-down">Decrease volume</option>
+                            <option value="zoom-in">Zoom in</option>
+                            <option value="zoom-out">Zoom out</option>
+                            <option value="next-window">Switch windows</option>
+                            <option value="click">Click</option>
+                            <p id="noVal"></p>
+                        </select>
+                        <p id="actionVal"></p>
+                    </header>
+                    <button id="save">Save</button>
+                    
+                    
+                </div>   
+
+            </dialog>
+
+            <dialog id="settings">
+                
+                <button id="sCButton">X</button>
+            </dialog>
+            <button id="start">Start</button>
+
+            <!-- <button>+</button> -->
+            <h1>Action</h1>
+
+        </div>
+
+        <div class="card-container">
+            <div class="card" id="gesture-detail">
+                <p>
+                    gesture details
+                </p>
+                <ul id="gesture-list"></ul>
+
+            </div>
+
+            <div class="card" id="action-detail">
+                <p>action details</p>
+                <!-- <video id="video" width = "600" height="400" autoplay playsinline></video> -->
+                <ul id="action-list"></ul>
+
+            </div>
+        </div>
+
+        
+        
+    </body>
+
+
+</html>
